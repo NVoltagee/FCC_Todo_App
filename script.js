@@ -14,6 +14,7 @@ const taskData = [];
 let currentTask = {};
 
 const addOrUpdateTask = () => {
+  addOrUpdateTaskBtn.innerText = "Add Task";
   const dataArrIndex = taskData.findIndex((item) => item.id === currentTask.id);
   const taskObj = {
     id: `${titleInput.value.toLowerCase().split(" ").join("-")}-${Date.now()}`,
@@ -24,6 +25,8 @@ const addOrUpdateTask = () => {
 
   if (dataArrIndex === -1) {
     taskData.unshift(taskObj);
+  } else {
+    taskData[dataArrIndex] = taskObj;
   }
 };
 
@@ -56,6 +59,11 @@ const editTask = (buttonEl) => {
     (item) => item.id === buttonEl.parentElement.id
   );
   currentTask = taskData[dataArrIndex];
+  taskForm.classList.toggle("hidden");
+  titleInput.value = currentTask.title;
+  dateInput.value = currentTask.date;
+  descriptionInput.value = currentTask.description;
+  addOrUpdateTaskBtn.innerText = "Update Task";
 };
 const reset = () => {
   titleInput.value = "";
@@ -72,7 +80,11 @@ openTaskFormBtn.addEventListener("click", () =>
 closeTaskFormBtn.addEventListener("click", () => {
   const formInputsContainValues =
     titleInput.value || dateInput.value || descriptionInput.value;
-  if (formInputsContainValues) {
+  const formInputValuesUpdated =
+    titleInput.value !== currentTask.title ||
+    dateInput.value !== currentTask.date ||
+    descriptionInput.value !== currentTask.description;
+  if (formInputsContainValues && formInputValuesUpdated) {
     confirmCloseDialog.showModal();
   } else {
     reset();
@@ -90,3 +102,14 @@ taskForm.addEventListener("submit", (e) => {
   e.preventDefault();
   addOrUpdateTask();
 });
+
+const myTaskArr = [
+  { task: "Walk the Dog", date: "22-04-2022" },
+  { task: "Read some books", date: "02-11-2023" },
+  { task: "Watch football", date: "10-08-2021" },
+];
+
+localStorage.setItem("data", JSON.stringify(myTaskArr));
+console.log(getTaskArr);
+const getTaskArr = JSON.parse(localStorage.getItem("data"));
+console.log(getTaskArr);
